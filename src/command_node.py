@@ -10,10 +10,10 @@ class Command_Node(Command):
 
         self._function = function
     
-    async def execute(self, args, kwargs):
+    async def execute(self, argv, kwargs):
         if callable(self._function):
             if iscoroutinefunction(self._function):
-                return await self._function(*args, **kwargs)
-            else
-                return self._function(*args, **kwargs)
+                return await self._function(*argv, **kwargs)
+            else:
+                return self._function(*argv, **kwargs)
         return 'Error. could not find a callable in the command object.'

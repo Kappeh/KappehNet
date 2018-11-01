@@ -10,7 +10,7 @@ class Command():
         return None
     
     def get_help(self, description = False):
-        if full and self._description:
+        if description and self._description:
             return self._description
         elif self._brief:
             return self._brief
