@@ -7,7 +7,7 @@ class Command_Node(Command):
         self._brief = brief
         self._description = description
         self._meta = kwargs
-        
+
         self._function = function
     
     async def execute(self, args, kwargs):

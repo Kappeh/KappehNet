@@ -1,6 +1,5 @@
 class Command():
-    
-    _cmd_string = None
+
     _brief = None
     _description = None
     _meta = {}
@@ -10,7 +9,7 @@ class Command():
             return self._meta[i]
         return None
     
-    def get_help(self, args, description = False):
+    def get_help(self, description = False):
         if full and self._description:
             return self._description
         elif self._brief:
