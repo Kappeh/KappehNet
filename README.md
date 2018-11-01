@@ -1,2 +1,2 @@
 # KappehNet
-My custom discord bot.
+My custom discord bot
