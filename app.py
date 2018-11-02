@@ -40,7 +40,7 @@ async def on_ready():
     for member in CLIENT.get_all_members():
         if str(member) == LOG_USER['name']:
             LOG_USER['member'] = member
-    await log('Bot logged in with name: {} and id: {}\n'.format(CLIENT.user.name, CLIENT.user.id), first_log = True)
+    await log('Bot logged in with name: {} and id: {}.\n'.format(CLIENT.user.name, CLIENT.user.id), first_log = True)
 
 @CLIENT.event
 async def on_message(message):
@@ -54,9 +54,9 @@ async def on_message(message):
     if CLIENT.user.id != message.author.id and user_command:
         log_message = str(message.author) + ' ran: "' + user_command + '"'
         if message.server:
-            log_message += ' in server: ' + message.server.name
+            log_message += ' in server: {}.'.format(message.server.name)
         else:
-            log_message += ' in a private message'
+            log_message += ' in a private message.'
         log_routine = log(log_message)
         if LOG_USER['name'] != str(message.author) or message.server:
             await log_routine
