@@ -1,7 +1,7 @@
 from inspect import iscoroutinefunction
 from src.command import Command
 
-class Command_Node(Command):
+class Command_Leaf(Command):
 
     def __init__(self, function, brief, description = None, **kwargs):
         self._brief = brief

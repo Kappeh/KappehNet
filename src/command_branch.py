@@ -1,6 +1,6 @@
 from inspect import iscoroutinefunction
 from src.command import Command
-from src.command_node import Command_Node
+from src.command_leaf import Command_Leaf
 
 class Command_Branch(Command):
 
@@ -31,7 +31,7 @@ class Command_Branch(Command):
             raise ValueError('Command name must have at least length 1.')
         if self.get_command(cmd_string) != None:
             raise ValueError('Command already exists.')
-        if not (isinstance(cmd, Command_Node) or isinstance(cmd, Command_Branch)):
+        if not (isinstance(cmd, Command_Leaf) or isinstance(cmd, Command_Branch)):
             raise ValueError('Command must be a Command Node or Command Branch.')
 
     def add_command(self, cmd_string, cmd):
@@ -65,7 +65,7 @@ class Command_Branch(Command):
         if cmd == None:
             return None
 
-        result += cmd.get_help(description = isinstance(cmd, Command_Node))
+        result += cmd.get_help(description = isinstance(cmd, Command_Leaf))
 
         if isinstance(cmd, Command_Branch):
             result += '\n\n'
