@@ -63,7 +63,8 @@ async def on_message(message):
 
         if user_command.lower().split(' ')[0] == 'help':
             argv = user_command.split(' ')[1:]
-            help_message = COMMANDS.get_help_message(*argv)
+            help_message = '```\n' + COMMANDS.get_help_message(*argv) + '\n'
+            help_message += 'Use @{} help <command> to get more information.\n```'.format(CLIENT.user.name)
             await CLIENT.send_message(message.channel, help_message)
         else:
             output = await COMMANDS.execute(user_command, CLIENT, user_command, message)
