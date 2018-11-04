@@ -27,7 +27,7 @@ COMMANDS.add_command('source_code', Command_Leaf(source_code, 'Link to {}\'s sou
 # Info -----------------------------------------------------------------------------------------------------------
 async def info(client, user_command, message):
     user = ''.join(user_command.split(' ')[1:])
-    chars = '<@>'
+    chars = '!<@>'
     for c in chars:
         user = user.replace(c, '')
     if user == '':
