@@ -1,12 +1,29 @@
 from time import gmtime, strftime
 import discord
 
-def RepresentsInt(s):
+def represents_int(s):
     try:
         int(s)
         return True
     except ValueError:
         return False
+
+def represents_float(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
+
+def represents_user(s):
+    if (s[:2] != '<@' and s[:3] != '<@!') or s[-1] != '>':
+        return False
+    chars = '!<@>'
+    for c in chars:
+        s = s.replace(c, '')
+    if not represents_int(s):
+        return False
+    return True
 
 def get_time():
     raw_time = strftime("%Y/%m/%d %H:%M:%S", gmtime())

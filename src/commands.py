@@ -1,5 +1,6 @@
 from src.command_leaf import Command_Leaf
 from src.command_branch import Command_Branch
+from src.command import Param
 
 import src.utils as utils
 import random
@@ -52,7 +53,11 @@ async def info(client, user_command, message):
 
     await client.send_message(message.channel, embed = em)
 
-COMMANDS.add_command('info', Command_Leaf(info, 'Finds information about a member of this server.'))
+info_params = [
+    Param('user', 'The user you want information about.', dtype = 'mention')
+]
+
+COMMANDS.add_command('info', Command_Leaf(info, 'Finds information about a member of this server.', params = info_params))
 
 # Dice -----------------------------------------------------------------------------------------------------------
 MAX_DICE_ROLLS = 50
@@ -60,11 +65,11 @@ MAX_DICE_FACES = 1000
 
 def get_dice_rolls(dice_string):
     if dice_string.find('d') == -1:
-        if not utils.RepresentsInt(dice_string):
+        if not utils.represents_int(dice_string):
             return None, 'Bad dice string.'
         return dice_string, int(dice_string)
     parts = dice_string.split('d')
-    if len(parts) != 2 or not utils.RepresentsInt(parts[0]) or not utils.RepresentsInt(parts[1]):
+    if len(parts) != 2 or not utils.represents_int(parts[0]) or not utils.represents_int(parts[1]):
         return None, 'Bad dice string.'
     if int(parts[0]) > MAX_DICE_ROLLS or int(parts[1]) > MAX_DICE_FACES:
         return None, 'Exceeded max limit of {}d{}.'.format(MAX_DICE_ROLLS, MAX_DICE_FACES)
@@ -95,7 +100,11 @@ async def dice(client, user_command, message):
     output_string = '\n'.join(output_strings)
     await client.send_message(message.channel, '```' + output_string + '```')
 
-COMMANDS.add_command('dice', Command_Leaf(dice, 'Rolls dice for you.'))
+dice_params = [
+    Param('dice_string', 'The ndm command which you want executing.', min_len = 3)
+]
+
+COMMANDS.add_command('dice', Command_Leaf(dice, 'Rolls dice for you.', params = dice_params))
 
 # Help -----------------------------------------------------------------------------------------------------------
 async def help_func(client, user_command, message):
@@ -103,8 +112,12 @@ async def help_func(client, user_command, message):
     help_message = COMMANDS.get_help_message(*argv)
     if isinstance(help_message, discord.Embed):
         return help_message
-    help_message = '```\n' + help_message + '\n'
-    help_message += 'Use @{} help <command> to get more information.\n```'.format(client.user.name)
-    await client.send_message(message.channel, help_message)
-    
-COMMANDS.add_command('help', Command_Leaf(help_func, 'Shows help messages.'))
+    help_message += '\nUse `@{} help <command>` to get more information.\n'.format(client.user.name)
+    em = discord.Embed(title = 'Help', description = help_message, colour = 0x00ff00)
+    await client.send_message(message.channel, embed = em)
+
+help_func_params = [
+    Param('cmd', '_optional_ The command which you need help with.')
+]
+
+COMMANDS.add_command('help', Command_Leaf(help_func, 'Shows help messages.', params = help_func_params))
