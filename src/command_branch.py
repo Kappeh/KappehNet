@@ -1,6 +1,7 @@
 from inspect import iscoroutinefunction
 from src.command import Command
 from src.command_leaf import Command_Leaf
+import src.utils as utils
 
 class Command_Branch(Command):
 
@@ -45,7 +46,7 @@ class Command_Branch(Command):
         cmd = self.get_command(*cmd_argv)
 
         if cmd == None:
-            return 'Error. Unable to find command.'
+            return utils.error_embed('Error.', 'Unable to find command.')
 
         if cmd._function and callable(cmd._function):
             if iscoroutinefunction(cmd._function):
@@ -53,14 +54,14 @@ class Command_Branch(Command):
             else:
                 return cmd._function(*argv, **kwargs)
         
-        return 'Error. could not find a callable in the command object.'
+        return utils.error_embed('Error.', 'could not find a callable in the command object.')
         
     def get_help_message(self, *argv):
         cmd = self
         if len(argv) != 0:
             cmd = self.get_command(*argv)
         if cmd == None:
-            return 'Unable to find command. Use help to get a list of avaliable commands.'
+            return utils.error_embed('Error.', 'Unable to find command. Use help to get a list of avaliable commands.')
 
         if isinstance(cmd, Command_Leaf):
             return '{} - {}\n'.format(' '.join(argv), cmd.get_help(True))

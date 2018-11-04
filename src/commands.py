@@ -31,10 +31,10 @@ async def info(client, user_command, message):
     for c in chars:
         user = user.replace(c, '')
     if user == '':
-        return 'Please enter a user to find information about.'
+        return utils.warning_embed('Missing parameter.', 'Please enter a user to find information about.')
     user = message.server.get_member(user)
     if not user:
-        return 'User not found.'
+        return utils.error_embed('Error.', 'User not found.')
 
     title = "{}'s Info".format(user.display_name)
     if user.bot == True:
@@ -61,11 +61,11 @@ MAX_DICE_FACES = 1000
 def get_dice_rolls(dice_string):
     if dice_string.find('d') == -1:
         if not utils.RepresentsInt(dice_string):
-            return None, 'Error parsing command.'
+            return None, 'Bad dice string.'
         return dice_string, int(dice_string)
     parts = dice_string.split('d')
     if len(parts) != 2 or not utils.RepresentsInt(parts[0]) or not utils.RepresentsInt(parts[1]):
-        return None, 'Error parsing command.'
+        return None, 'Bad dice string.'
     if int(parts[0]) > MAX_DICE_ROLLS or int(parts[1]) > MAX_DICE_FACES:
         return None, 'Exceeded max limit of {}d{}.'.format(MAX_DICE_ROLLS, MAX_DICE_FACES)
     dice_values = [random.randint(1, int(parts[1])) for _ in range(int(parts[0]))]
@@ -90,7 +90,7 @@ async def dice(client, user_command, message):
     for i in range(len(roll_list)):
         s, t = get_roll(roll_list[i])
         if not s:
-            return t
+            return utils.error_embed('Error while parsing command.', t)
         output_strings.append('Roll {}: {} = {}'.format(i + 1, s, t))
     output_string = '\n'.join(output_strings)
     await client.send_message(message.channel, '```' + output_string + '```')
@@ -100,7 +100,11 @@ COMMANDS.add_command('dice', Command_Leaf(dice, 'Rolls dice for you.'))
 # Help -----------------------------------------------------------------------------------------------------------
 async def help_func(client, user_command, message):
     argv = user_command.split(' ')[1:]
-    help_message = '```\n' + COMMANDS.get_help_message(*argv) + '\n'
+    help_message = COMMANDS.get_help_message(*argv)
+    if isinstance(help_message, discord.Embed):
+        return help_message
+    help_message = '```\n' + help_message + '\n'
     help_message += 'Use @{} help <command> to get more information.\n```'.format(client.user.name)
     await client.send_message(message.channel, help_message)
+    
 COMMANDS.add_command('help', Command_Leaf(help_func, 'Shows help messages.'))

@@ -61,5 +61,7 @@ async def on_message(message):
         output = await COMMANDS.execute(user_command, CLIENT, user_command, message)
         if isinstance(output, str):
             await CLIENT.send_message(message.channel, output)
+        if isinstance(output, discord.Embed):
+            await CLIENT.send_message(message.channel, embed = output)
 
 CLIENT.run(TOKEN)

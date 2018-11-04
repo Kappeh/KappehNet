@@ -1,3 +1,5 @@
+import src.utils as utils
+
 class Command():
 
     _brief = None
@@ -14,4 +16,4 @@ class Command():
             return self._description
         elif self._brief:
             return self._brief
-        return 'Error. Could not find command\'s help message.'
+        return utils.error_embed('Error.', 'Could not find command\'s help message.')

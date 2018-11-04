@@ -1,5 +1,6 @@
 from inspect import iscoroutinefunction
 from src.command import Command
+import src.utils as utils
 
 class Command_Leaf(Command):
 
@@ -16,4 +17,4 @@ class Command_Leaf(Command):
                 return await self._function(*argv, **kwargs)
             else:
                 return self._function(*argv, **kwargs)
-        return 'Error. could not find a callable in the command object.'
+        return utils.error_embed('Error.', 'Could not find a callable in the command object.')
