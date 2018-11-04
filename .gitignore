@@ -108,3 +108,4 @@ venv.bak/
 
 # Credential files
 Credentials.py
+auth.ini

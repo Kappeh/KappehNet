@@ -57,20 +57,15 @@ class Command_Branch(Command):
         
     def get_help_message(self, *argv):
         cmd = self
-        result = ''
         if len(argv) != 0:
             cmd = self.get_command(*argv)
-            result = ' '.join(argv) + ' - '
-        
         if cmd == None:
-            return None
+            return 'Unable to find command. Use help to get a list of avaliable commands.'
 
-        result += cmd.get_help(description = isinstance(cmd, Command_Leaf))
-
-        if isinstance(cmd, Command_Branch):
-            result += '\n\n'
-            result += 'Sub Commands:\n'
+        if isinstance(cmd, Command_Leaf):
+            return '{} - {}\n'.format(' '.join(argv), cmd.get_help(True))
+        else:
+            result = '{}\n\nCommands:\n'.format(cmd.get_help())
             for scmd in cmd._commands.keys():
-                result += '    {} - {}\n'.format(scmd, cmd._commands[scmd].get_help())
-
-        return result
+                result += ' ' * 4 + '{:<20} - {}\n'.format(scmd, cmd._commands[scmd].get_help())
+            return result
