@@ -12,6 +12,8 @@ class Command_Branch(Command):
 
         self._function = function
         self._commands = {}
+
+        self.validate_params()
     
     def get_command(self, cmd, *argv):
         if not isinstance(cmd, str):

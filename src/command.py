@@ -2,7 +2,7 @@ import src.utils as utils
 
 class Param():
 
-    def __init__(self, name, description, dtype = None, min_val = None, max_val = None, min_len = None, max_len = None):
+    def __init__(self, name, description, dtype = None, min_val = None, max_val = None, min_len = None, max_len = None, optional = False):
         self.name = name
         self.description = description
         self.dtype = dtype
@@ -10,13 +10,14 @@ class Param():
         self.max_val = max_val
         self.min_len = min_len
         self.max_len = max_len
+        self.optional = optional
 
         self.validate_param()
 
     def validate_param(self):
         if (self.min_val or self.min_val) and self.dtype not in ['int', 'num']:
             raise Exception('Min and max values can only be specified for int and num params.')
-        if self.dtype and self.dtype not in ['int', 'num', 'mention', 'str']:
+        if self.dtype and self.dtype not in ['int', 'num', 'mention', 'str', 'text']:
             raise Exception('Invalid Param.dtype.')
         if self.min_val and not isinstance(self.min_val, (float, int)):
             raise Exception('Param.min_val must be a number.')
@@ -45,7 +46,36 @@ class Command():
     def get_usage_message(self):
         if not self._params:
             return 'No parameters required.'
-        return 'Usage:\n' + '\n'.join(['`{}` - {}.'.format(param.name, param.description) for param in self._params])
+        usage_message = 'Usage:\n'
+        for param in self._params:
+            usage_message += '`' + param.name + '` - '
+            if param.optional:
+                usage_message += '_optional_ - '
+            usage_message += param.description + '\n'
+        
+        return usage_message
+
+    def validate_params(self):
+        self.params_required = 0
+
+        if not self._params:
+            return
+
+        optional = False
+        text = False
+
+        for param in self._params:
+            if text:
+                raise Exception('You can only have one text Param and it must be the last.')
+            if not param.optional and optional:
+                raise Exception('You cannot have an optional Param before a non optional Param.')
+
+            if param.optional:
+                optional = True
+            else:
+                self.params_required += 1
+            if param.dtype == 'text':
+                text = True
 
     def validate_execute_command(self, argv):
         if not self._params:
@@ -53,12 +83,15 @@ class Command():
                 return utils.warning_embed('Unexpected parameter.', self.get_usage_message())
             return None
 
-        if len(argv) < len(self._params) and self._params[-1].dtype:
+        if len(argv) < self.params_required:
             return utils.warning_embed('Missing parameter.', self.get_usage_message())
-        if len(argv) > len(self._params):
+        if len(argv) > len(self._params) and self._params[-1].dtype != 'text':
             return utils.warning_embed('Unexpected parameter.', self.get_usage_message())
 
         for i in range(len(self._params)):
+            if self._params[i].optional and len(argv) < i:
+                break
+
             if self._params[i].min_val and float(argv[i]) < self._params[i].min_val:
                 return utils.warning_embed('Parameter out of bounds.', '`{}` must be more than {}.'.format(self._params[i].name, self._params[i].min_val))
             if self._params[i].max_val and float(argv[i]) > self._params[i].max_val:

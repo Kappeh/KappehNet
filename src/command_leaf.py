@@ -10,6 +10,8 @@ class Command_Leaf(Command):
         self._params = params
 
         self._function = function
+
+        self.validate_params()
     
     async def execute(self, argv, kwargs):
         if callable(self._function):

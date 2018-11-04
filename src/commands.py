@@ -101,7 +101,7 @@ async def dice(client, user_command, message):
     await client.send_message(message.channel, '```' + output_string + '```')
 
 dice_params = [
-    Param('dice_string', 'The ndm command which you want executing.', min_len = 3)
+    Param('dice_string', 'The ndm command which you want executing.', dtype = 'text', min_len = 3)
 ]
 
 COMMANDS.add_command('dice', Command_Leaf(dice, 'Rolls dice for you.', params = dice_params))
@@ -117,7 +117,7 @@ async def help_func(client, user_command, message):
     await client.send_message(message.channel, embed = em)
 
 help_func_params = [
-    Param('cmd', '_optional_ The command which you need help with.')
+    Param('cmd', 'The command which you need help with.', dtype = 'text', optional = True)
 ]
 
 COMMANDS.add_command('help', Command_Leaf(help_func, 'Shows help messages.', params = help_func_params))
