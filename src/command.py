@@ -47,11 +47,13 @@ class Command():
         if not self._params:
             return 'No parameters required.'
         usage_message = 'Usage:\n'
-        for param in self._params:
-            usage_message += '`' + param.name + '` - '
-            if param.optional:
+        for i in range(len(self._params)):
+            usage_message += '`' + self._params[i].name + '` - '
+            if self._params[i].optional:
                 usage_message += '_optional_ - '
-            usage_message += param.description + '\n'
+            usage_message += self._params[i].description
+            if i < len(self._params) - 1:
+                usage_message += '\n'
         
         return usage_message
 
