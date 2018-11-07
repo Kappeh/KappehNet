@@ -3,6 +3,7 @@ from src.command_branch import Command_Branch
 from src.command import Param
 from PIL import Image
 from io import BytesIO
+from src.permissions import *
 
 import src.utils as utils
 import random

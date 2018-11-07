@@ -2,13 +2,15 @@ from inspect import iscoroutinefunction
 from src.command import Command
 from src.command_leaf import Command_Leaf
 import src.utils as utils
+import src.permissions as perms
 
 class Command_Branch(Command):
 
-    def __init__(self, brief, function = None, params = None, **kwargs):
+    def __init__(self, brief, function = None, params = None, perms = None, **kwargs):
         self._brief = brief
         self._meta = kwargs
         self._params = params
+        self._perms = perms
 
         self._function = function
         self._commands = {}
@@ -42,7 +44,7 @@ class Command_Branch(Command):
         cmd_string = cmd_string.lower()
 
         self._commands[cmd_string] = cmd
-    
+
     async def execute(self, cmd_to_execute, *argv, **kwargs):
         cmd_argv = cmd_to_execute.split(' ')
         cmd, argv_return = self.get_command(*cmd_argv)
@@ -50,6 +52,9 @@ class Command_Branch(Command):
         if cmd == None:
             return utils.error_embed('Error.', 'Unable to find command.')
             
+        if not perms.validate_permissions(argv[2].channel.permissions_for(argv[2].author), cmd._perms):
+            return utils.error_embed('Insufficient Permissions.', 'You do not have the permissions required to execute that command.')
+
         error = cmd.validate_execute_command(argv_return)
         if error:
             return error

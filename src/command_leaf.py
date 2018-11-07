@@ -4,10 +4,11 @@ import src.utils as utils
 
 class Command_Leaf(Command):
 
-    def __init__(self, function, brief, params = None, **kwargs):
+    def __init__(self, function, brief, params = None, perms = None, **kwargs):
         self._brief = brief
         self._meta = kwargs
         self._params = params
+        self._perms = perms
 
         self._function = function
 
