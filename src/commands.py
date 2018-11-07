@@ -1,10 +1,14 @@
 from src.command_leaf import Command_Leaf
 from src.command_branch import Command_Branch
 from src.command import Param
+from PIL import Image
+from io import BytesIO
 
 import src.utils as utils
 import random
+import requests
 import discord
+import os
 
 # Main Command Branch --------------------------------------------------------------------------------------------
 BOT_NAME = 'KappehNet'
@@ -27,12 +31,10 @@ COMMANDS.add_command('source_code', Command_Leaf(source_code, 'Link to {}\'s sou
 
 # Info -----------------------------------------------------------------------------------------------------------
 async def info(client, user_command, message):
-    user = ''.join(user_command.split(' ')[1:])
+    user = user_command.split(' ')[1]
     chars = '!<@>'
     for c in chars:
         user = user.replace(c, '')
-    if user == '':
-        return utils.warning_embed('Missing parameter.', 'Please enter a user to find information about.')
     user = message.server.get_member(user)
     if not user:
         return utils.error_embed('Error.', 'User not found.')
@@ -105,6 +107,36 @@ dice_params = [
 ]
 
 COMMANDS.add_command('dice', Command_Leaf(dice, 'Rolls dice for you.', params = dice_params))
+
+
+# Pixelfy --------------------------------------------------------------------------------------------------------
+async def pixelfy(client, user_command, message):
+    user = user_command.split(' ')[1]
+    chars = '!<@>'
+    for c in chars:
+        user = user.replace(c, '')
+    user = message.server.get_member(user)
+    if not user:
+        return utils.error_embed('Error.', 'User not found.')
+    if not user.avatar_url:
+        return utils.error_embed('Error.', 'User avatar not found.')
+    response = requests.get(user.avatar_url)
+    img = Image.open(BytesIO(response.content))
+
+    pixel_size = int(user_command.split(' ')[2])
+    img = img.resize((img.size[0] // pixel_size, img.size[1] // pixel_size), Image.NEAREST)
+    img = img.resize((img.size[0] * pixel_size, img.size[1] * pixel_size), Image.NEAREST)
+
+    img.save('tmp.png')
+    await client.send_file(message.channel, 'tmp.png', filename = 'pixelated.png')
+    os.remove('tmp.png')
+
+pixelfy_params = [
+    Param('user', 'The user that you wish to pixelfy.', dtype = 'mention'),
+    Param('pixel_size', 'The amount that you want to pixelfy.', dtype = 'int', min_val = 2, max_val = 30)
+]
+
+COMMANDS.add_command('pixelfy', Command_Leaf(pixelfy, 'Pixelates your friends.', params = pixelfy_params))
 
 # Help -----------------------------------------------------------------------------------------------------------
 async def help_func(client, user_command, message):

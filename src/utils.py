@@ -33,4 +33,4 @@ def error_embed(title, description):
     return discord.Embed(title = title, colour = 0xff0000, description = ':x: ' + description)
 
 def warning_embed(title, description):
-    return discord.Embed(title = title, colour = 0xffff00, description = ':warning: ' + description)
+    return discord.Embed(title = ':warning: ' + title, colour = 0xffff00, description = description)
