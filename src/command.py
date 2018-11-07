@@ -97,11 +97,11 @@ class Command():
             if self._params[i].min_val and float(argv[i]) < self._params[i].min_val:
                 return utils.warning_embed('Parameter out of bounds.', '`{}` must be more than {}.'.format(self._params[i].name, self._params[i].min_val))
             if self._params[i].max_val and float(argv[i]) > self._params[i].max_val:
-                return utils.warning_embed('Parameter out of bounds.', '`{}` must be less than {}.'.format(self._params[i].name, self._params[i].max_val))
+                return utils.warning_embed('Parameter out of bounds.', '`{}` must be less than {}.'.format(self._params[i].name, self._params[i].max_val) + 1)
             if self._params[i].min_len and len(argv[i]) < self._params[i].min_len:
                 return utils.warning_embed('Incorrect parameter length.', '`{}` must have length of at least {}.'.format(self._params[i].name, self._params[i].min_len))
             if self._params[i].max_len and len(argv[i]) > self._params[i].max_len:
-                return utils.warning_embed('Incorrect parameter length.', '`{}` must have length of less than {}.'.format(self._params[i].name, self._params[i].max_len))
+                return utils.warning_embed('Incorrect parameter length.', '`{}` must have length of less than {}.'.format(self._params[i].name, self._params[i].max_len) + 1)
             if not self._params[i].dtype:
                 continue
             if self._params[i].dtype == 'int' and not utils.represents_int(argv[i]):
