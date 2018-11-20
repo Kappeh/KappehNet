@@ -11,6 +11,8 @@ import requests
 import discord
 import os
 
+from src.quote.quote_manager import QuoteManager
+
 # Main Command Branch --------------------------------------------------------------------------------------------
 BOT_NAME = 'KappehNet'
 BOT_VERSION = '1.0'
@@ -139,6 +141,46 @@ pixelfy_params = [
 
 COMMANDS.add_command('pixelfy', Command_Leaf(pixelfy, 'Pixelates your friends.', params = pixelfy_params))
 
+# Quote ----------------------------------------------------------------------------------------------------------
+QUOTE_ERRORS = ['Sorry bud. I can\'t help you. ', 
+                'I don\'t know any good quotes. Maybe you can tell me one!',
+                'I would if I would, but I cant.',
+                'A dog once wondered across the street.',
+                'I\'m out of ideas.',
+                'Sorry!',
+                'Last one, I promise!']
+QUOTE_TITLES = ['I went through blood, sweat, and tears whilst reading {0}',
+                'Have you seen {0}? Spoiler alert!',
+                'I\'ve dedicated this quote to you, {1}. It\'s from {0}',
+                'Hehe... it\'s from {0}']
+
+NUM_QUOTE_ERRORS = len(QUOTE_ERRORS)
+NUM_QUOTE_TITLES = len(QUOTE_TITLES)
+
+QUOTES_FILE_PATH = 'res/quotes.txt'
+
+quotemanager = QuoteManager(QUOTES_FILE_PATH)
+
+async def quote_func(client, user_command, message):
+    if not quotemanager.loaded:
+        quotemanager.load()
+
+    quote = quotemanager.pickRandomQuote()
+    if not quote:
+        errorIndex = random.randint(0, NUM_QUOTE_ERRORS - 1)
+        return utils.error_embed('Oops.', QUOTE_ERRORS[errorIndex])
+
+    text = quote.text
+    origin = quote.origin
+
+    titleIndex = random.randint(0, NUM_QUOTE_TITLES - 1)
+    title = QUOTE_TITLES[titleIndex].format(origin, message.author.display_name)
+    
+    em = discord.Embed(title = title, colour = 0x43B581, description = text)
+    await client.send_message(message.channel, embed = em)
+
+COMMANDS.add_command('quote', Command_Leaf(quote_func, 'Fetches a funny quote. Like a dog.'))
+
 # Help -----------------------------------------------------------------------------------------------------------
 async def help_func(client, user_command, message):
     argv = user_command.split(' ')[1:]
@@ -146,7 +188,7 @@ async def help_func(client, user_command, message):
     if isinstance(help_message, discord.Embed):
         return help_message
     help_message += '\nUse `@{} help <command>` to get more information.\n'.format(client.user.name)
-    em = discord.Embed(title = 'Help', description = help_message, colour = 0x00ff00)
+    em = discord.Embed(title = 'Help', description = help_message, colour = 0x43B581)
     await client.send_message(message.channel, embed = em)
 
 help_func_params = [
