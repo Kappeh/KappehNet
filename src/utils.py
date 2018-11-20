@@ -30,7 +30,7 @@ def get_time():
     return '[' + raw_time + '] '
 
 def error_embed(title, description):
-    return discord.Embed(title = title, colour = 0xff0000, description = ':x: ' + description)
+    return discord.Embed(title = title, colour = 0xF04747, description = ':x: ' + description)
 
 def warning_embed(title, description):
-    return discord.Embed(title = ':warning: ' + title, colour = 0xffff00, description = description)
+    return discord.Embed(title = ':warning: ' + title, colour = 0xFAA61A, description = description)
