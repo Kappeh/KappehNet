@@ -26,6 +26,13 @@ async def ping(client, user_command, message):
 
 COMMANDS.add_command('ping', Command_Leaf(ping, 'Replies with pong.'))
 
+# Say ------------------------------------------------------------------------------------------------------------
+async def say(client, user_command, message):
+    em = discord.Embed(title = 'OI.', description = '_*OI.*_', colour = 0x43B581)
+    await client.send_message(message.channel, embed = em)
+
+COMMANDS.add_command('say', Command_Leaf(say, 'Says your message back to you. ;)'))
+
 # Source code ----------------------------------------------------------------------------------------------------
 async def source_code(client, user_command, message):
     await client.send_message(message.channel, 'Source code can be found at: {}.'.format(SOURCE_CODE_URL))
