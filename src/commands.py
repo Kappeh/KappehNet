@@ -37,6 +37,12 @@ say_params = [
 
 COMMANDS.add_command('say', Command_Leaf(say, 'Says your message back to you. ;)', params = say_params))
 
+# Invite Link ----------------------------------------------------------------------------------------------------
+async def invite_link(client, user_command, message):
+    await client.send_message(message.channel, 'https://discordapp.com/oauth2/authorize?client_id=' + str(client.user.id) + '&scope=bot&permissions=8')
+
+COMMANDS.add_command('invite_link', Command_Leaf(invite_link, 'Invite me to your other servers!'))
+
 # Source code ----------------------------------------------------------------------------------------------------
 async def source_code(client, user_command, message):
     await client.send_message(message.channel, 'Source code can be found at: {}.'.format(SOURCE_CODE_URL))
