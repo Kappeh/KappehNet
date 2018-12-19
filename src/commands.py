@@ -28,7 +28,8 @@ COMMANDS.add_command('ping', Command_Leaf(ping, 'Replies with pong.'))
 
 # Say ------------------------------------------------------------------------------------------------------------
 async def say(client, user_command, message):
-    em = discord.Embed(title = 'OI.', description = '_*OI.*_', colour = 0x43B581)
+    response = ' '.join(user_command.split(' ')[1:])
+    em = discord.Embed(title = response, colour = 0x43B581)
     await client.send_message(message.channel, embed = em)
 
 say_params = [
