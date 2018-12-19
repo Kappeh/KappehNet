@@ -44,6 +44,27 @@ async def invite_link(client, user_command, message):
 
 COMMANDS.add_command('invite_link', Command_Leaf(invite_link, 'Invite me to your other servers!'))
 
+# Nuke -----------------------------------------------------------------------------------------------------------
+async def nuke(client, user_command, message):
+    if message.channel.type == discord.ChannelType.private:
+        return utils.error_embed('Error.', 'Cannot nuke a private chat.')
+    if message.channel.type == discord.ChannelType.group:
+        return utils.error_embed('Error.', 'Cannot nuke a private group.')
+
+    channels = message.server.channels
+    for channel in channels:
+        if channel.type != discord.ChannelType.text:
+            continue
+
+        em = discord.Embed(title = 'May death rain upon them!', colour = 0xF04747)
+        await client.send_message(channel, embed = em)
+
+nuke_perms = [
+    ADMINISTRATOR
+]
+
+COMMANDS.add_command('nuke', Command_Leaf(nuke, 'Try it and find out.', perms = nuke_perms))
+
 # Source code ----------------------------------------------------------------------------------------------------
 async def source_code(client, user_command, message):
     await client.send_message(message.channel, 'Source code can be found at: {}.'.format(SOURCE_CODE_URL))
