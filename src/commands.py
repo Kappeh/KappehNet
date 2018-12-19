@@ -31,7 +31,11 @@ async def say(client, user_command, message):
     em = discord.Embed(title = 'OI.', description = '_*OI.*_', colour = 0x43B581)
     await client.send_message(message.channel, embed = em)
 
-COMMANDS.add_command('say', Command_Leaf(say, 'Says your message back to you. ;)'))
+say_params = [
+    Param('message', 'The message you want the bot to say.', dtype = 'text', optional = True)
+]
+
+COMMANDS.add_command('say', Command_Leaf(say, 'Says your message back to you. ;)', params = say_params))
 
 # Source code ----------------------------------------------------------------------------------------------------
 async def source_code(client, user_command, message):
