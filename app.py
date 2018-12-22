@@ -3,6 +3,7 @@
 # https://github.com/Kappeh/KappehNet
 
 import os
+import re
 import sys
 import discord
 import configparser
@@ -41,10 +42,12 @@ async def on_ready():
 
 @CLIENT.event
 async def on_message(message):
-    prefix = '<@' + CLIENT.user.id + '> '
     user_command = ''
-    if message.content.startswith(prefix):
-        user_command = message.content.replace(prefix, '', 1)
+    
+    matches = re.findall(r'<@!?' + str(CLIENT.user.id) + '>\s', message.content)
+
+    if len(matches) > 0 and message.content.startswith(matches[0]):
+        user_command = message.content.replace(matches[0], '', 1)
     elif not message.server:
         user_command = message.content
 
